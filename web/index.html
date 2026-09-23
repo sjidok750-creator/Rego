@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>다보탑 해체 기록</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;700&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #0f1417;
+    --panel: rgba(13, 17, 20, 0.74);
+    --stone: #e6e0d3;
+    --stone-2: #aaa596;
+    --stone-3: #75726a;
+    --lichen: #8fb3a4;
+    --ember: #e0a458;
+    --hair: rgba(230, 224, 211, 0.16);
+    --bg: radial-gradient(ellipse 120% 90% at 50% 34%, #2a3640 0%, #161d23 52%, #0b0e11 100%);
+    --serif: "Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", "Batang", serif;
+    --sans: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --gut: 48px;
+  }
+  :root[data-mode="brick"] {
+    color-scheme: light;
+    --ink: #eef2f4;
+    --panel: rgba(250, 251, 252, 0.82);
+    --stone: #1d2326;
+    --stone-2: #4a5358;
+    --stone-3: #7c868c;
+    --lichen: #0a6fb6;
+    --ember: #d0281a;
+    --hair: rgba(29, 35, 38, 0.16);
+    --bg: linear-gradient(180deg, #f6f8f9 0%, #e3e9ec 55%, #cfd8dc 100%);
+  }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--ink); color: var(--stone); font-family: var(--sans); overflow: hidden; }
+  #app { position: fixed; inset: 0; background: var(--bg); overflow: hidden; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  #hud { position: absolute; inset: 0; pointer-events: none; font-feature-settings: "tnum" 1; }
+
+  .brand { position: absolute; left: var(--gut); top: 40px; }
+  .eyebrow, .edition, .counter .label, .c-top, .c-en, .c-spec dt, .b-roman, .b-sub, .tc, .segs em, .k-eyebrow, .k-meta {
+    font-family: var(--mono); letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .eyebrow { font-size: 12px; color: var(--stone-2); }
+  .title { display: flex; align-items: baseline; gap: 14px; margin-top: 6px; }
+  .title .han { font-family: var(--serif); font-weight: 700; font-size: 44px; letter-spacing: 0.08em; line-height: 1; }
+  .title .ko { font-size: 18px; font-weight: 500; color: var(--stone-2); }
+  .edition { margin-top: 10px; font-size: 11.5px; color: var(--lichen); letter-spacing: 0.08em; text-transform: none; }
+
+  .counter { position: absolute; right: var(--gut); top: 40px; text-align: right; }
+  .counter .label { font-size: 11px; color: var(--stone-3); }
+  .count { font-family: var(--serif); font-weight: 700; line-height: 1; margin-top: 4px; }
+  #cnt-now { font-size: 64px; letter-spacing: 0.02em; }
+  .count .of { font-size: 20px; color: var(--stone-3); margin-left: 8px; }
+  .counter .meta { font-family: var(--mono); font-size: 12px; color: var(--stone-2); margin-top: 6px; }
+
+  .ledger { position: absolute; right: calc(var(--gut) - 12px); top: 172px; margin: 0; padding: 8px 12px; list-style: none; width: 190px; background: var(--panel); border: 1px solid var(--hair); z-index: 2; }
+  .ledger li { display: grid; grid-template-columns: 28px 1fr 10px; align-items: center; height: 21px; font-size: 12.5px; color: var(--stone-3); }
+  .ledger .no { font-family: var(--mono); font-size: 10.5px; }
+  .ledger .st { width: 6px; height: 6px; border-radius: 50%; border: 1px solid currentColor; justify-self: end; }
+  .ledger li.done { color: var(--stone-2); }
+  .ledger li.done .st { background: var(--lichen); border-color: var(--lichen); }
+  .ledger li.on { color: var(--ember); font-weight: 700; }
+  .ledger li.on .st { background: var(--ember); border-color: var(--ember); box-shadow: 0 0 10px var(--ember); }
+
+  .callout {
+    position: absolute; z-index: 2; left: var(--gut); bottom: 118px; width: 400px; padding: 18px 20px 16px;
+    background: var(--panel); border: 1px solid var(--hair); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+  }
+  .callout::before, .callout::after { content: ""; position: absolute; width: 12px; height: 12px; border: 0 solid var(--ember); }
+  .callout::before { left: -1px; top: -1px; border-left-width: 2px; border-top-width: 2px; }
+  .callout::after { right: -1px; bottom: -1px; border-right-width: 2px; border-bottom-width: 2px; }
+  .c-top { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--stone-3); }
+  .c-no { color: var(--ember); font-weight: 500; }
+  .c-name { margin-top: 10px; font-family: var(--serif); font-weight: 700; font-size: 38px; line-height: 1.1; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; text-wrap: balance; }
+  .c-han { font-size: 21px; font-weight: 500; color: var(--stone-2); letter-spacing: 0.06em; }
+  .c-en { font-size: 11px; color: var(--stone-3); margin-top: 6px; }
+  .c-desc { margin: 12px 0 14px; font-size: 15px; line-height: 1.6; color: var(--stone); }
+  .c-spec { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin: 0; padding-top: 12px; border-top: 1px solid var(--hair); }
+  .c-spec div { min-width: 0; }
+  .c-spec dt { font-size: 10px; color: var(--stone-3); }
+  .c-spec dd { margin: 2px 0 0; font-family: var(--mono); font-size: 13.5px; color: var(--stone); white-space: nowrap; }
+
+  .leader { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; opacity: 0; }
+  .leader polyline { fill: none; stroke: var(--ember); stroke-width: 1.2; }
+  .leader #leader-dot { fill: none; stroke: var(--ember); stroke-width: 1.4; }
+  .leader #leader-pin { fill: var(--ember); }
+
+  .tags { position: absolute; inset: 0; z-index: 1; }
+  .tag { position: absolute; left: 0; top: 0; translate: -50% -50%; opacity: 0; display: flex; align-items: center; gap: 5px;
+    padding: 2px 7px 2px 5px; font-size: 11.5px; white-space: nowrap; color: var(--stone-2);
+    background: var(--panel); border: 1px solid var(--hair); }
+  .tag b { font-family: var(--mono); font-weight: 500; font-size: 10.5px; color: var(--lichen); }
+  .tag.hot { color: var(--stone); border-color: var(--ember); }
+  .tag.hot b { color: var(--ember); }
+  .tag.big { font-size: 13px; padding: 3px 9px 3px 6px; }
+  .tag.lost { border-style: dashed; border-color: var(--ember); color: var(--ember); }
+  .tag.lost b { color: var(--ember); font-family: var(--serif); }
+  .xlines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; opacity: 0; }
+  .xlines polyline { fill: none; stroke: var(--stone-3); stroke-width: 1; }
+  .xlabel { position: absolute; left: 0; top: 0; translate: 0 -50%; opacity: 0; display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+  .xlabel.left { translate: -100% -50%; flex-direction: row-reverse; }
+  .xlabel b { font-family: var(--mono); font-weight: 500; font-size: 11px; color: var(--ember); }
+  .xlabel .xn { font-size: 14px; font-weight: 500; }
+  .xlabel .xh { font-family: var(--serif); font-size: 12px; color: var(--stone-2); }
+
+  .banner { position: absolute; left: 50%; top: 42px; translate: -50% 0; text-align: center; opacity: 0; display: grid; gap: 6px; justify-items: center; }
+  .b-roman { font-size: 12px; color: var(--ember); }
+  .b-name { font-family: var(--serif); font-weight: 700; font-size: 34px; line-height: 1.1; }
+  .b-name span { font-size: 20px; font-weight: 500; color: var(--stone-2); margin-left: 6px; letter-spacing: 0.06em; }
+  .b-sub { font-size: 11.5px; color: var(--stone-2); }
+
+  .card { position: absolute; inset: 0; display: grid; place-content: center start; justify-items: start; text-align: left; opacity: 0; gap: 10px; padding-inline: max(16px, 7vw) 16px;
+    background: radial-gradient(ellipse 46% 60% at 22% 50%, color-mix(in srgb, var(--ink) 72%, transparent) 0%, transparent 100%); }
+  .k-eyebrow { font-size: 13px; color: var(--stone-2); }
+  .k-han { font-family: var(--serif); font-weight: 700; font-size: 132px; letter-spacing: 0.14em; line-height: 1.05; margin-left: -0.04em; }
+  .k-ko { font-family: var(--serif); font-weight: 500; font-size: 28px; letter-spacing: 0.12em; color: var(--stone); }
+  .k-rule { width: 120px; height: 1px; background: var(--ember); margin: 10px 0 6px; }
+  .k-meta { font-size: 12.5px; color: var(--stone-2); letter-spacing: 0.1em; }
+  .k-note { font-size: 17px; line-height: 1.7; max-width: 30em; margin: 4px 0 8px; color: var(--stone); text-wrap: balance; }
+
+  .timeline { position: absolute; left: var(--gut); right: var(--gut); bottom: 34px; display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 20px; }
+  .controls { display: flex; gap: 8px; align-items: center; pointer-events: auto; }
+  .controls:empty { display: none; }
+  .timeline:has(.controls:empty) { grid-template-columns: 1fr auto; }
+  .track { position: relative; height: 34px; pointer-events: auto; cursor: pointer; }
+  .segs span { position: absolute; bottom: 0; height: 34px; border-left: 1px solid var(--hair); }
+  .segs em { position: absolute; left: 6px; top: 0; font-size: 10px; font-style: normal; color: var(--stone-3); letter-spacing: 0.08em; white-space: nowrap; }
+  .track::after { content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 2px; background: var(--hair); }
+  .fill { position: absolute; left: 0; bottom: 6px; height: 2px; background: var(--ember); z-index: 1; }
+  .ticks i { position: absolute; bottom: 3px; width: 1px; height: 8px; background: var(--stone-3); }
+  .head { position: absolute; bottom: 2px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--ember); z-index: 2; box-shadow: 0 0 0 4px color-mix(in srgb, var(--ember) 25%, transparent); }
+  .tc { font-size: 12px; color: var(--stone-2); padding-bottom: 1px; letter-spacing: 0.06em; }
+
+  .controls button { font: 500 12px var(--sans); color: var(--stone); background: var(--panel); border: 1px solid var(--hair); height: 32px; min-width: 32px; padding: 0 10px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .controls button:hover { border-color: var(--stone-3); }
+  .controls button:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
+  .controls button.on { border-color: var(--ember); color: var(--ember); }
+  .controls .seg { display: inline-flex; }
+  .controls .seg button + button { border-left: 0; }
+  .controls svg { width: 12px; height: 12px; fill: currentColor; }
+
+  .loading { position: absolute; inset: 0; display: grid; place-content: center; font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; color: var(--stone-2); }
+
+  [data-capture] .controls { display: none; }
+
+  @media (max-width: 900px) {
+    :root { --gut: 16px; }
+    .ledger { display: none; }
+    .title .han { font-size: 30px; }
+    .title .ko { font-size: 14px; }
+    .brand { top: 20px; }
+    .counter { top: 20px; }
+    #cnt-now { font-size: 40px; }
+    .callout { width: auto; right: var(--gut); bottom: 128px; padding: 12px 14px; }
+    .c-name { font-size: 26px; }
+    .c-desc { font-size: 13.5px; margin: 8px 0 10px; }
+    .c-spec dd { font-size: 12px; }
+    .banner { top: 108px; width: calc(100% - 32px); }
+    .b-name { font-size: 24px; }
+    .k-han { font-size: 72px; }
+    .card { place-content: end start; padding-bottom: 150px; }
+    .k-ko { font-size: 20px; }
+    .timeline { grid-template-columns: 1fr auto; bottom: 16px; row-gap: 10px; }
+    .controls { grid-column: 1 / -1; flex-wrap: wrap; }
+    .segs em { display: none; }
+    .xlabel .xh { display: none; }
+  }
+  @media (max-width: 520px) {
+    .edition, .eyebrow, .counter .label, .counter .meta, .c-desc, .c-en { display: none; }
+    .title { flex-direction: column; gap: 4px; }
+    #cnt-now { font-size: 34px; }
+    .count .of { font-size: 14px; }
+    .tag:not(.hot):not(.big):not(.lost) { display: none; }
+    .controls .seg[aria-label="재생 속도"] { display: none; }
+    .controls button { padding: 0 9px; }
+    .callout { bottom: 104px; }
+    .c-name { font-size: 22px; }
+    .banner { top: 92px; }
+  }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="app">
+  <canvas id="gl" aria-label="다보탑 3D 해체 애니메이션"></canvas>
+  <div id="hud"><div class="loading">다보탑 부재 생성 중…</div></div>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "dabotap-disassembly",
+  "version": "1.0.0",
+  "description": "불국사 다보탑 해체 영상 — 절차적 3D 석재 모델과 1:10 브릭 에디션, 프레임 단위 오프라인 렌더러",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "stills": "node render/render.mjs --stills 5,20,40,62,75,82 --mode",
+    "render:stone": "node render/parallel.mjs --mode stone --workers 2 && python3 render/audio.py stone",
+    "render:brick": "node render/parallel.mjs --mode brick --workers 2 && python3 render/audio.py brick"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sjidok750-creator/Rego.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sjidok750-creator/Rego/issues"
+  },
+  "homepage": "https://github.com/sjidok750-creator/Rego#readme",
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/noto-sans-kr": "^5.3.0",
+    "@fontsource/noto-serif-kr": "^5.3.0",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "playwright": "^1.56.1"
+  },
+  "private": true
+}
