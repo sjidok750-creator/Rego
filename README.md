@@ -13,7 +13,8 @@
 
 ## 결과물
 
-- `video/dabotap_stone.mp4`, `video/dabotap_brick.mp4` — 1920×1080, 30 fps, H.264 + 합성 사운드트랙
+- `video/dabotap_stone.mp4`, `video/dabotap_brick.mp4` — 1920×1080, 30 fps, 84.6초, H.264 + 합성 사운드트랙
+  (저장소 용량 때문에 CRF 17 마스터를 다시 인코딩한 약 40 MB 판본; 마스터는 `npm run render:*`로 다시 만들 수 있습니다)
 - `dist/dabotap.html` — 파일 하나로 열리는 인터랙티브 뷰어 (three.js 포함, 오프라인 동작; 글꼴만 Google Fonts)
   - 재생/일시정지, 타임라인 스크럽, 0.5×/1×/2×, 정밀 석재 ↔ 브릭 전환, 자동/자유 카메라(드래그로 궤도 회전)
   - 단축키: `Space` 재생, `←/→` 2초 이동
@@ -69,6 +70,8 @@ node render/render.mjs --mode stone --stills 5,20,40,75   # 확인용 스틸
 npm run render:stone                    # 영상 + 사운드 → video/dabotap_stone.mp4
 npm run render:brick
 ```
+
+GPU 없는 4코어 컨테이너 기준으로 석재판 약 70분, 브릭판 약 2시간 15분이 걸렸습니다(SwiftShader 소프트웨어 렌더링).
 
 렌더러는 `web/`을 로컬로 서빙하고 헤드리스 Chromium에서 `window.DABO.seek(t)`로 프레임을 하나씩 정확히 그린 뒤
 PNG를 ffmpeg로 바로 넘깁니다. 모든 움직임이 시간 t의 순수 함수라 어느 프레임이든 같은 결과가 나오고,
