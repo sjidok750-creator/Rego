@@ -113,10 +113,14 @@ export function createHud(root, ch, { capture }) {
 
   let mode = 'stone';
   let brickStats = null;
+  let lastActive = -2;
+  let lastCard = '';
 
   function setMode(m, stats) {
     mode = m;
     brickStats = stats || brickStats;
+    lastActive = -2; // re-render the callout's spec rows (stone vs brick counts)
+    lastCard = '';
     el.edition.textContent = m === 'brick'
       ? `브릭 에디션 · 축척 1:10 (1 스터드 = 8 cm)${brickStats ? ` · 브릭 ${int(brickStats.total)}개` : ''}`
       : `정밀 석재 모델 · 부재 ${N}종 ${pieceCount}점 · 높이 10.29 m`;
@@ -139,9 +143,6 @@ export function createHud(root, ch, { capture }) {
     if (mode === 'brick' && p.brick) rows[3] = ['브릭', `${int(p.brick.bricks)}개 · 스터드 ${int(p.brick.studs)}`];
     return rows.map(([k, val]) => `<div><dt>${k}</dt><dd>${val}</dd></div>`).join('');
   }
-
-  let lastActive = -2;
-  let lastCard = '';
 
   function update(t, camera, W, H, partCenters, lionGhosts) {
     const st = ch.stage(t);
